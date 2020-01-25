@@ -17,17 +17,30 @@ mongoose.connect(url, {useNewUrlParser: true});
 const server = http.createServer(app);
 const io = socketIo(server);
 
+
 io.sockets.on('connection', function(socket){
   console.log("new client")
+
   socket.on('join', function(roomname) {
     console.log("Test")
     socket.join(roomname)
+<<<<<<< HEAD
   })
   socket.on('create', function() {
     let id = Math.random().toString(36).substring(2, 5) + Math.random().toString(36).substring(2, 5)
     socket.join(id)
     socket.emit('createcallback', id)
   })
+=======
+  });
+
+  socket.on('question', function(question, roomname) {
+    socket.emit.to(roomname).emit('my message', question);
+  });
+ 
+
+
+>>>>>>> a5bc81e0cd8aa5f16cfe7f10e988a7dac37cb65d
 })
 
 
