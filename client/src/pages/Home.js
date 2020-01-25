@@ -17,12 +17,15 @@ class Home extends Component {
     .then(content => this.setState({ content: content }))
   }
 
+  joinRoom() {
+    socket.emit('join', "roomname")
+  }
+
   componentDidMount() {
     this.getRes();
     socket.emit('test');
-    socket.join("woww")
+    this.joinRoom();
   }
-  
 
   render() {
     return (
