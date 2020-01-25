@@ -1,5 +1,7 @@
 import React, { Component } from 'react';
 import { Link } from 'react-router-dom';
+import openSocket from 'socket.io-client';
+const socket = openSocket('http://localhost:5000');
 
 class Home extends Component {
   constructor(props) {
@@ -17,6 +19,7 @@ class Home extends Component {
 
   componentDidMount() {
     this.getRes();
+    socket.emit('test');
   }
 
   render() {
