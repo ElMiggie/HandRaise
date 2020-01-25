@@ -23,14 +23,19 @@ class Home extends Component {
   joinRoom() {
     this.setState({inroom: true})
     socket.emit('join', this.state.roomname)
-    fetch('/api/getRes')
-    .then(res => res.json())
-    .then(content => this.setState({ content: content }))
+  }
+
+  createRoom() {
+    this.setState({inroom: true})
+    socket.emit('create')
   }
 
   componentDidMount() {
     this.getRes();
-    socket.emit('test');
+    socket.emit('create');
+    socket.on('createcallback', function(name) {
+      console.log(name)
+    });
   }
 
   handleChange(event) {
@@ -57,6 +62,9 @@ class Home extends Component {
           </label>
           <input type="submit" value="Submit" />
         </form>
+        <button onClick={() => this.createRoom()}>
+        Create Room
+        </button>
           {this.state.content}
         </div>
       </div>

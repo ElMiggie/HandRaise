@@ -23,6 +23,11 @@ io.sockets.on('connection', function(socket){
     console.log("Test")
     socket.join(roomname)
   })
+  socket.on('create', function() {
+    let id = Math.random().toString(36).substring(2, 5) + Math.random().toString(36).substring(2, 5)
+    socket.join(id)
+    socket.emit('createcallback', id)
+  })
 })
 
 
