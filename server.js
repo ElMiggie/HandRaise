@@ -19,7 +19,7 @@ const io = socketIo(server);
 
 io.sockets.on('connection', function(socket){
   console.log("new client")
-  io.on('test', function() {console.log("Test received")})
+  socket.on('test', function() {console.log("Test received")})
 })
 // Creating schemas
 const mySchema = new mongoose.Schema({
