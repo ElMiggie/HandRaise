@@ -1,6 +1,11 @@
 import React, { Component } from 'react';
 import { Button } from 'reactstrap';
-import { Link } from 'react-router-dom';
+import {
+  BrowserRouter as Router,
+  Switch,
+  Route,
+  Link
+} from "react-router-dom";
 import openSocket from 'socket.io-client';
 const socket = openSocket('http://localhost:5000');
 const axios = require('axios')
@@ -28,18 +33,6 @@ class Home extends Component {
     socket.emit('join', this.state.roomname)
   }
 
-  createRoom() {
-    this.setState({inroom: true})
-    socket.emit('create');
-    socket.on('createcallback', (name) => {
-      this.setState({roomname: name})
-    })
-  }
-
-  voteQuestion(id) {
-    socket.emit('vote', id, this.state.roomname);
-  }
-
   componentDidMount() {
     this.getRes();
     socket.on('messagesent', (message, id) => {
@@ -65,6 +58,53 @@ class Home extends Component {
     this.joinRoom();
   }
 
+  handleProfessor(event) {
+    const profPage = ProfessorQuestionPage()
+    profPage.render();
+  }
+
+  handleStudent(event) {
+    const studentPage = StudentQuestionPage()
+    studentPage.render();
+  }
+
+
+  render() {
+      //Two buttons: I am a Student // I am a Professor. 
+      return (
+        <Router>
+          <div style={{display: "flex", justifyContent: "center"}}>
+
+            <Button variant="primary" onClick={this.handleStudent.bind(this)}>
+               <Link to="/student">Student</Link>
+            </Button>
+
+            <Button variant="primary" onClick={this.handleProfessor.bind(this)}>
+              <Link to="/professor">Professor</Link>
+            </Button>
+          </div>
+        </Router>
+
+      )
+    }
+}
+
+class StudentQuestionPage extends Component {
+  constructor(props) {
+    super(props)
+    this.state = {
+      content: "",
+      roomname: "",
+      question: "",
+      questions: []
+    }
+  }
+
+  voteQuestion(id) {
+    socket.emit('vote', id, this.state.roomname);
+  }
+
+  
   sendQuestion(event) {
     event.preventDefault();
     socket.emit('question', this.state.question, this.state.roomname);
@@ -72,28 +112,6 @@ class Home extends Component {
   }
 
   render() {
-    if (!this.state.inroom) {
-      return (
-      <div style={{display: "flex", justifyContent: "center"}}>
-        <div style={{width: "50%", textAlign: "center"}}>
-          <h1>
-          React Boilerplate
-          </h1>
-          <form noValidate autoComplete="off" onSubmit={this.handleSubmit.bind(this)}>
-          <label>
-            Name:
-            <input type="text" value={this.state.roomname} onChange={(value) => this.handleChange(value)} />
-          </label>
-          <input type="submit" value="Submit" />
-        </form>
-        <Button variant="primary" onClick={this.createRoom.bind(this)}>
-        Create Room
-        </Button>
-          {this.state.content}
-        </div>
-      </div>
-      );
-    } else {
       const listItems = this.state.questions.map((question, index) =>
         <div key={question.id}>
           <div>{question.message}</div>
@@ -121,7 +139,55 @@ class Home extends Component {
           </div>
         </div>
       )
+  }
+}
+
+
+
+// Make a room - look at the questions
+class ProfessorQuestionPage extends Component {
+
+  constructor(props) {
+    super(props)
+    this.state = {
+      content: "",
+      roomname: "",
+      question: "",
+      questions: []
     }
   }
+
+  createRoom() {
+    this.setState({inroom: true})
+    socket.emit('create');
+    socket.on('createcallback', (name) => {
+      this.setState({roomname: name})
+    })
+  }
+
+  render() {
+    // Should route us to student/professor choosing page 
+    return (
+      <div style={{display: "flex", justifyContent: "center"}}>
+        <div style={{width: "50%", textAlign: "center"}}>
+          <h1>
+          React Boilerplate
+          </h1>
+          <form noValidate autoComplete="off" onSubmit={this.handleSubmit.bind(this)}>
+          <label>
+            Name:
+            <input type="text" value={this.state.roomname} onChange={(value) => this.handleChange(value)} />
+          </label>
+          <input type="submit" value="Submit" />
+        </form>
+        <Button variant="primary" onClick={this.createRoom.bind(this)}>
+        Create Room
+        </Button>
+          {this.state.content}
+        </div>
+      </div>
+      );
+  }
+
 }
 export default Home;
