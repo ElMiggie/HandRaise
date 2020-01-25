@@ -19,7 +19,7 @@ class Home extends Component {
 
   componentDidMount() {
     this.getRes();
-    socket.emit('test');
+    console.log(socket.emit('test'))
   }
 
   render() {

@@ -1,6 +1,7 @@
 //Express imports
 const express = require('express');
 const path = require('path');
+const http = require("http");
 const app = express();
 const socketIo = require("socket.io");
 
@@ -13,10 +14,13 @@ const url = 'mongodb+srv://user:4g5l5DkljpG5iNsJ@chatroom-pqfv4.mongodb.net/test
 mongoose.connect(url, {useNewUrlParser: true});
 
 //Socket.IO:
+const server = http.createServer(app);
 const io = socketIo(server);
 
-io.on("test", console.log("Test received"))
-
+io.sockets.on('connection', function(socket){
+  console.log("woa")
+  io.on("test", function() {console.log("Test received")})
+})
 // Creating schemas
 const mySchema = new mongoose.Schema({
   name: String,
@@ -65,6 +69,5 @@ app.get('*', (req,res) =>{
 });
 
 const port = process.env.PORT || 5000;
-app.listen(port);
+server.listen(port);
 console.log('App is listening on port ' + port);
-
