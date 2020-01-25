@@ -2,6 +2,7 @@ import React, { Component } from 'react';
 import { Link } from 'react-router-dom';
 import openSocket from 'socket.io-client';
 const socket = openSocket('http://localhost:5000');
+const axios = require('axios')
 
 class Home extends Component {
   constructor(props) {
@@ -9,6 +10,7 @@ class Home extends Component {
     this.state = {
       content: "",
       roomname: "",
+      inroom: false
     }
   }
 
@@ -19,13 +21,16 @@ class Home extends Component {
   }
 
   joinRoom() {
+    this.setState({inroom: true})
     socket.emit('join', this.state.roomname)
+    fetch('/api/getRes')
+    .then(res => res.json())
+    .then(content => this.setState({ content: content }))
   }
 
   componentDidMount() {
     this.getRes();
     socket.emit('test');
-    this.joinRoom();
   }
 
   handleChange(event) {
@@ -34,27 +39,35 @@ class Home extends Component {
 
   handleSubmit(event) {
     event.preventDefault();
-    alert('A name was submitted: ' + this.state.roomname);
+    this.joinRoom();
   }
 
   render() {
-    return (
-    <div style={{display: "flex", justifyContent: "center"}}>
-      <div style={{width: "50%", textAlign: "center"}}>
-        <h1>
-        React Boilerplate
-        </h1>
-        <form onSubmit={this.handleSubmit.bind(this)}>
-        <label>
-          Name:
-          <input type="text" value={this.state.value} onChange={(value) => this.handleChange(value)} />
-        </label>
-        <input type="submit" value="Submit" />
-      </form>
-        {this.state.content}
+    if (!this.state.inroom) {
+      return (
+      <div style={{display: "flex", justifyContent: "center"}}>
+        <div style={{width: "50%", textAlign: "center"}}>
+          <h1>
+          React Boilerplate
+          </h1>
+          <form onSubmit={this.handleSubmit.bind(this)}>
+          <label>
+            Name:
+            <input type="text" value={this.state.value} onChange={(value) => this.handleChange(value)} />
+          </label>
+          <input type="submit" value="Submit" />
+        </form>
+          {this.state.content}
+        </div>
       </div>
-    </div>
-    );
+      );
+    } else {
+      return (
+        <div>
+          fdsf
+        </div>
+      )
+    }
   }
 }
 export default Home;
