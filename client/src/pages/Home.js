@@ -10,7 +10,8 @@ class Home extends Component {
     this.state = {
       content: "",
       roomname: "",
-      inroom: false
+      question: "",
+      inroom: false,
     }
   }
 
@@ -42,9 +43,18 @@ class Home extends Component {
     this.setState({roomname: event.target.value});
   }
 
+  handleChangeQuestion(event) {
+    this.setState({question: event.target.value});
+  }
+
   handleSubmit(event) {
     event.preventDefault();
     this.joinRoom();
+  }
+
+  sendQuestion(event) {
+    event.preventDefault();
+    console.log("SENT")
   }
 
   render() {
@@ -58,7 +68,7 @@ class Home extends Component {
           <form onSubmit={this.handleSubmit.bind(this)}>
           <label>
             Name:
-            <input type="text" value={this.state.value} onChange={(value) => this.handleChange(value)} />
+            <input type="text" value={this.state.roomname} onChange={(value) => this.handleChange(value)} />
           </label>
           <input type="submit" value="Submit" />
         </form>
@@ -71,8 +81,22 @@ class Home extends Component {
       );
     } else {
       return (
-        <div>
-          fdsf
+        <div style={{display: "flex", justifyContent: "center"}}>
+          <div style={{width: "50%", textAlign: "center"}}>
+            <h1>
+            Message
+            </h1>
+            <form onSubmit={this.sendQuestion.bind(this)}>
+            <label>
+              Message:
+              <input type="text" value={this.state.question} onChange={(value) => this.handleChangeQuestion(value)} />
+            </label>
+            <input type="submit" value="Submit" />
+          </form>
+          <button onClick={() => this.sendQuestion()}>
+          Create Room
+          </button>
+          </div>
         </div>
       )
     }
