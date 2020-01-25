@@ -17,11 +17,20 @@ mongoose.connect(url, {useNewUrlParser: true});
 const server = http.createServer(app);
 const io = socketIo(server);
 
+
 io.sockets.on('connection', function(socket){
   console.log("new client")
+
   socket.on('join', function(roomname) {
     socket.join(roomname)
-  })
+  });
+
+  socket.on('question', function(question, roomname) {
+    socket.emit.to(roomname).emit('my message', question);
+  });
+ 
+
+
 })
 
 
