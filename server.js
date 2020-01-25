@@ -10,6 +10,11 @@ const db = mongoose.connection;
 const url = 'mongodb+srv://user:4g5l5DkljpG5iNsJ@chatroom-pqfv4.mongodb.net/test?retryWrites=true';
 mongoose.connect(url, {useNewUrlParser: true});
 
+//Socket.IO:
+const io = socketIo(server);
+
+io.on("test", console.log("Test received"))
+
 // Creating schemas
 const mySchema = new mongoose.Schema({
   name: String,
@@ -60,3 +65,4 @@ app.get('*', (req,res) =>{
 const port = process.env.PORT || 5000;
 app.listen(port);
 console.log('App is listening on port ' + port);
+
