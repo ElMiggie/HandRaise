@@ -12,7 +12,8 @@ class Home extends Component {
       roomname: "",
       question: "",
       inroom: false,
-      questions: []
+      questions: [],
+      voted: []
     }
   }
 
@@ -35,8 +36,27 @@ class Home extends Component {
     })
   }
 
+  registerVote(id) {
+    var temparray = []
+    for (var i = 0; i < this.state.questions.length; i++) {
+      if (this.state.questions[i].id === id) {
+        temparray.push({
+          message: this.state.questions[i].message,
+          votes: this.state.questions[i].votes + 1,
+          id: id
+        })
+      } else {
+        temparray.push(this.state.questions[i])
+      }
+    }
+    this.setState({questions: temparray})
+  }
+
   voteQuestion(id) {
-    socket.emit('vote', id, this.state.roomname);
+    if (!this.state.voted.includes(id)) {
+      this.setState({voted: this.state.voted.concat(id)})
+      socket.emit('vote', id, this.state.roomname);
+    }
   }
 
   componentDidMount() {
@@ -47,7 +67,7 @@ class Home extends Component {
       console.log(this.state.questions)
     })
     socket.on('votesent', (id) => {
-      console.log(id)
+      this.registerVote(id)
     })
   }
 
