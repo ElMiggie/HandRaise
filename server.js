@@ -30,7 +30,7 @@ io.sockets.on('connection', function(socket){
     socket.emit('createcallback', id)
   });
   socket.on('question', function(question, roomname) {
-    socket.emit.to(roomname).emit('my message', question);
+    io.sockets.in(roomname).emit('my message', question);
   });
 })
 

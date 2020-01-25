@@ -28,15 +28,15 @@ class Home extends Component {
 
   createRoom() {
     this.setState({inroom: true})
-    socket.emit('create')
+    socket.emit('create');
+    socket.on('createcallback', (name) => {
+      this.setState({roomname: name})
+    })
   }
 
   componentDidMount() {
     this.getRes();
-    socket.emit('create');
-    socket.on('createcallback', function(name) {
-      console.log(name)
-    });
+
   }
 
   handleChange(event) {
@@ -54,7 +54,7 @@ class Home extends Component {
 
   sendQuestion(event) {
     event.preventDefault();
-    socket.emit('question', this.state.question);
+    socket.emit('question', this.state.question, this.state.roomname);
     console.log("SENT")
   }
 
@@ -73,7 +73,7 @@ class Home extends Component {
           </label>
           <input type="submit" value="Submit" />
         </form>
-        <button onClick={() => this.createRoom()}>
+        <button onClick={this.createRoom.bind(this)}>
         Create Room
         </button>
           {this.state.content}
