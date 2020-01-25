@@ -7,7 +7,8 @@ class Home extends Component {
   constructor(props) {
     super(props)
     this.state = {
-      content: ""
+      content: "",
+      roomname: "",
     }
   }
 
@@ -18,13 +19,22 @@ class Home extends Component {
   }
 
   joinRoom() {
-    socket.emit('join', "roomname")
+    socket.emit('join', this.state.roomname)
   }
 
   componentDidMount() {
     this.getRes();
     socket.emit('test');
     this.joinRoom();
+  }
+
+  handleChange(event) {
+    this.setState({roomname: event.target.value});
+  }
+
+  handleSubmit(event) {
+    event.preventDefault();
+    alert('A name was submitted: ' + this.state.roomname);
   }
 
   render() {
@@ -34,6 +44,13 @@ class Home extends Component {
         <h1>
         React Boilerplate
         </h1>
+        <form onSubmit={this.handleSubmit.bind(this)}>
+        <label>
+          Name:
+          <input type="text" value={this.state.value} onChange={(value) => this.handleChange(value)} />
+        </label>
+        <input type="submit" value="Submit" />
+      </form>
         {this.state.content}
       </div>
     </div>
