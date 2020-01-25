@@ -22,6 +22,7 @@ io.sockets.on('connection', function(socket){
   console.log("new client")
 
   socket.on('join', function(roomname) {
+    console.log("Test")
     socket.join(roomname)
   });
 
