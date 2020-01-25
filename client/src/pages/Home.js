@@ -13,6 +13,7 @@ class Home extends Component {
       roomname: "",
       question: "",
       inroom: false,
+      questions: []
     }
   }
 
@@ -35,9 +36,20 @@ class Home extends Component {
     })
   }
 
+  voteQuestion(id) {
+    socket.emit('vote', id, this.state.roomname);
+  }
+
   componentDidMount() {
     this.getRes();
-
+    socket.on('messagesent', (message, id) => {
+      this.setState({questions: this.state.questions.concat({message: message, votes: 0, id: id})})
+      console.log(id)
+      console.log(this.state.questions)
+    })
+    socket.on('votesent', (id) => {
+      console.log(id)
+    })
   }
 
   handleChange(event) {
@@ -82,6 +94,13 @@ class Home extends Component {
       </div>
       );
     } else {
+      const listItems = this.state.questions.map((question, index) =>
+        <div key={question.id}>
+          <div>{question.message}</div>
+          <div>Votes: {question.votes}</div>
+          <button onClick={() => this.voteQuestion(question.id)}>vote</button>
+        </div>
+      );
       return (
         <div style={{display: "flex", justifyContent: "center"}}>
           <div style={{width: "50%", textAlign: "center"}}>
@@ -98,6 +117,7 @@ class Home extends Component {
           <button onClick={() => this.sendQuestion()}>
           Create Room2
           </button>
+          {listItems}
           </div>
         </div>
       )
