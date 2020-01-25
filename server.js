@@ -18,8 +18,8 @@ const server = http.createServer(app);
 const io = socketIo(server);
 
 io.sockets.on('connection', function(socket){
-  console.log("woa")
-  io.on("test", function() {console.log("Test received")})
+  console.log("new client")
+  io.on('test', function() {console.log("Test received")})
 })
 // Creating schemas
 const mySchema = new mongoose.Schema({
