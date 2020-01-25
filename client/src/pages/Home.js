@@ -1,4 +1,5 @@
 import React, { Component } from 'react';
+import { Button } from 'reactstrap';
 import { Link } from 'react-router-dom';
 import openSocket from 'socket.io-client';
 const socket = openSocket('http://localhost:5000');
@@ -66,16 +67,16 @@ class Home extends Component {
           <h1>
           React Boilerplate
           </h1>
-          <form onSubmit={this.handleSubmit.bind(this)}>
+          <form noValidate autoComplete="off" onSubmit={this.handleSubmit.bind(this)}>
           <label>
             Name:
             <input type="text" value={this.state.roomname} onChange={(value) => this.handleChange(value)} />
           </label>
           <input type="submit" value="Submit" />
         </form>
-        <button onClick={this.createRoom.bind(this)}>
+        <Button variant="primary" onClick={this.createRoom.bind(this)}>
         Create Room
-        </button>
+        </Button>
           {this.state.content}
         </div>
       </div>
@@ -95,7 +96,7 @@ class Home extends Component {
             <input type="submit" value="Submit" />
           </form>
           <button onClick={() => this.sendQuestion()}>
-          Create Room
+          Create Room2
           </button>
           </div>
         </div>
