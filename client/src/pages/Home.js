@@ -54,6 +54,7 @@ class Home extends Component {
 
   sendQuestion(event) {
     event.preventDefault();
+    socket.emit('create', this.state.question);
     console.log("SENT")
   }
 
