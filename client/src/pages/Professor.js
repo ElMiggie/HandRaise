@@ -11,29 +11,17 @@ import { withRouter } from 'react-router';
 const socket = openSocket('http://localhost:5000');
 const axios = require('axios')
 
-class Home extends Component {
+// Make a room - look at the questions
+class Professor extends Component {
+
   constructor(props) {
     super(props)
     this.state = {
       content: "",
       roomname: "",
       question: "",
-      inroom: false,
-      questions: [],
-      voted: []
+      questions: []
     }
-  }
-
-  getRes() {
-    fetch('/api/getRes')
-    .then(res => res.json())
-    .then(content => this.setState({ content: content }))
-  }
-
-  joinRoom() {
-    this.setState({inroom: true})
-    socket.emit('join', this.state.roomname)
-    this.props.history.push('/student')
   }
 
   createRoom() {
@@ -41,41 +29,7 @@ class Home extends Component {
     socket.emit('create');
     socket.on('createcallback', (name) => {
       this.setState({roomname: name})
-      this.props.history.push('/professor')
     })
-  }
-
-  componentDidMount() {
-    this.getRes();
-    socket.on('messagesent', (message, id) => {
-      this.setState({questions: this.state.questions.concat({message: message, votes: 0, id: id})})
-      console.log(id)
-      console.log(this.state.questions)
-    })
-    socket.on('votesent', (id) => {
-      this.registerVote(id)
-    })
-  }
-
-  handleChange(event) {
-    this.setState({roomname: event.target.value});
-  }
-
-  handleChangeQuestion(event) {
-    this.setState({question: event.target.value});
-  }
-
-  handleSubmit(event) {
-    event.preventDefault();
-    this.joinRoom();
-  }
-
-  handleProfessor(event) {
-    this.props.history.push(`/professor`);
-  }
-
-  handleStudent(event) {
-    this.props.history.push(`/student`);
   }
 
   registerVote(id) {
@@ -93,20 +47,6 @@ class Home extends Component {
     }
     this.setState({questions: temparray})
   }
-
-  voteQuestion(id) {
-    if (!this.state.voted.includes(id)) {
-      this.setState({voted: this.state.voted.concat(id)})
-      socket.emit('vote', id, this.state.roomname);
-    }
-  }
-
-  sendQuestion(event) {
-    event.preventDefault();
-    socket.emit('question', this.state.question, this.state.roomname);
-    console.log("SENT")
-  }
-
 
   render() {
     // Should route us to student/professor choosing page
@@ -131,6 +71,7 @@ class Home extends Component {
       </div>
       );
   }
+
 }
 
-export default withRouter(Home);
+export default withRouter(Professor);

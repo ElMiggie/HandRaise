@@ -11,7 +11,7 @@ import { withRouter } from 'react-router';
 const socket = openSocket('http://localhost:5000');
 const axios = require('axios')
 
-class Home extends Component {
+class Student extends Component {
   constructor(props) {
     super(props)
     this.state = {
@@ -24,29 +24,7 @@ class Home extends Component {
     }
   }
 
-  getRes() {
-    fetch('/api/getRes')
-    .then(res => res.json())
-    .then(content => this.setState({ content: content }))
-  }
-
-  joinRoom() {
-    this.setState({inroom: true})
-    socket.emit('join', this.state.roomname)
-    this.props.history.push('/student')
-  }
-
-  createRoom() {
-    this.setState({inroom: true})
-    socket.emit('create');
-    socket.on('createcallback', (name) => {
-      this.setState({roomname: name})
-      this.props.history.push('/professor')
-    })
-  }
-
   componentDidMount() {
-    this.getRes();
     socket.on('messagesent', (message, id) => {
       this.setState({questions: this.state.questions.concat({message: message, votes: 0, id: id})})
       console.log(id)
@@ -57,25 +35,8 @@ class Home extends Component {
     })
   }
 
-  handleChange(event) {
-    this.setState({roomname: event.target.value});
-  }
-
   handleChangeQuestion(event) {
     this.setState({question: event.target.value});
-  }
-
-  handleSubmit(event) {
-    event.preventDefault();
-    this.joinRoom();
-  }
-
-  handleProfessor(event) {
-    this.props.history.push(`/professor`);
-  }
-
-  handleStudent(event) {
-    this.props.history.push(`/student`);
   }
 
   registerVote(id) {
@@ -107,30 +68,35 @@ class Home extends Component {
     console.log("SENT")
   }
 
-
   render() {
-    // Should route us to student/professor choosing page
-    return (
-      <div style={{display: "flex", justifyContent: "center"}}>
-        <div style={{width: "50%", textAlign: "center"}}>
-          <h1>
-          React Boilerplate
-          </h1>
-          <form noValidate autoComplete="off" onSubmit={this.handleSubmit.bind(this)}>
-          <label>
-            Name:
-            <input type="text" value={this.state.roomname} onChange={(value) => this.handleChange(value)} />
-          </label>
-          <input type="submit" value="Submit" />
-        </form>
-        <Button variant="primary" onClick={this.createRoom.bind(this)}>
-        Create Room
-        </Button>
-          {this.state.content}
+      const listItems = this.state.questions.map((question, index) =>
+        <div key={question.id}>
+          <div>{question.message}</div>
+          <div>Votes: {question.votes}</div>
+          <button onClick={() => this.voteQuestion(question.id)}>vote</button>
         </div>
-      </div>
       );
+      return (
+        <div style={{display: "flex", justifyContent: "center"}}>
+          <div style={{width: "50%", textAlign: "center"}}>
+            <h1>
+            Message
+            </h1>
+            <form onSubmit={this.sendQuestion.bind(this)}>
+            <label>
+              Message:
+              <input type="text" value={this.state.question} onChange={(value) => this.handleChangeQuestion(value)} />
+            </label>
+            <input type="submit" value="Submit" />
+          </form>
+          <button onClick={() => this.sendQuestion()}>
+          Create Room2
+          </button>
+          {listItems}
+          </div>
+        </div>
+      )
   }
 }
 
-export default withRouter(Home);
+export default withRouter(Student);
