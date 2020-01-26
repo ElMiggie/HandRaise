@@ -25,6 +25,8 @@ class Student extends Component {
   }
 
   componentDidMount() {
+    this.setState({roomname: this.props.match.params.post})
+    socket.emit('join', this.props.match.params.post)
     socket.on('messagesent', (message, id) => {
       this.setState({questions: this.state.questions.concat({message: message, votes: 0, id: id})})
       console.log(id)

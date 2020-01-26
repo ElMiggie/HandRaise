@@ -31,9 +31,7 @@ class Home extends Component {
   }
 
   joinRoom() {
-    this.setState({inroom: true})
-    socket.emit('join', this.state.roomname)
-    this.props.history.push('/student')
+    this.props.history.push(`/${this.state.roomname}`);
   }
 
   createRoom() {
@@ -68,14 +66,6 @@ class Home extends Component {
   handleSubmit(event) {
     event.preventDefault();
     this.joinRoom();
-  }
-
-  handleProfessor(event) {
-    this.props.history.push(`/professor`);
-  }
-
-  handleStudent(event) {
-    this.props.history.push(`/student`);
   }
 
   registerVote(id) {

@@ -30,7 +30,6 @@ io.sockets.on('connection', function(socket){
     socket.emit('createcallback', id)
   });
   socket.on('question', function(question, roomname) {
-    console.log(roomname)
     let id = Math.random().toString(36).substring(2, 8) + Math.random().toString(36).substring(2, 8)
     io.sockets.in(roomname).emit('messagesent', question, id);
   });
